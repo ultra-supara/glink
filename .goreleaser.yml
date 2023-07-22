@@ -1,0 +1,33 @@
+project_name: glink
+env:
+  - GO111MODULE=on
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - main: .
+    binary: glink
+    ldflags: -s -w -X main.version={{.Version}} -X main.revision={{.ShortCommit}} -X main.date={{.Date}}
+    flags:
+      - -trimpath
+archives:
+  - format: tar.gz
+    replacements:
+      darwin: Darwin
+      386: i386
+      amd64: x86_64
+    files:
+      - LICENSE
+      - CREDITS
+release:
+  prerelease: auto
+brews:
+  - tap:
+      owner: ultra-supara
+      name: homebrew-glink
+    folder: Formula
+    homepage: 'https://github.com/ultra-supara/glink'
+    description: 'glink'
+    license: "MIT"
+    test: |
+      system "#{bin}/glink", "--version"
